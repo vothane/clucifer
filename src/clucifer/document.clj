@@ -8,4 +8,4 @@
 
 (defn add-field 
   [doc field]
-  (.add doc field))
+  (.add @doc field))

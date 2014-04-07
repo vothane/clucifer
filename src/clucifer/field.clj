@@ -6,4 +6,4 @@
     field-attributes))
 
 (defn update-attribute [field attribute value]
-  (swap! assoc :attribute value))
+  (swap! field assoc attribute value))

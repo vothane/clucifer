@@ -4,16 +4,16 @@
 
 (deftest field
 
-  (testing "attributes should have default values"
+  (testing "meta attributes should have default values"
     (let [a-field (create-field {:name "clucifer"})]
-      (is (= (:store @a-field) true))
-      (is (= (:type @a-field) String))
-      (is (= (:analyzer @a-field) :standard))))
+      (is (= (:store (meta a-field)) true))
+      (is (= (:type (meta a-field)) String))
+      (is (= (:analyzer (meta a-field)) :standard)))))
 
-  (testing "attributes should be updated"
+  (testing "meta attributes should be updated"
     (let [a-field (create-field {:name "clucifer"})]
-      (update-attribute a-field :store false)
-      (is (= (:store @a-field) false))))
+      (update-meta-data a-field :store false)
+      (is (= (:store (meta a-field) false))))
 
   (testing "should convert to Lucene field"
     (let [a-field      (create-field {:name "clucifer"})

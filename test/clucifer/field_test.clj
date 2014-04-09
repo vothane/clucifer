@@ -6,14 +6,14 @@
 
   (testing "attributes should have default values"
     (let [a-field (create-field {:name "clucifer"})]
-      (is (= (:store @a-field) false))
+      (is (= (:store @a-field) true))
       (is (= (:type @a-field) String))
       (is (= (:analyzer @a-field) :standard))))
 
   (testing "attributes should be updated"
     (let [a-field (create-field {:name "clucifer"})]
-      (update-attribute a-field :store true)
-      (is (= (:store @a-field) true))))
+      (update-attribute a-field :store false)
+      (is (= (:store @a-field) false))))
 
   (testing "should convert to Lucene field"
     (let [a-field      (create-field {:name "clucifer"})

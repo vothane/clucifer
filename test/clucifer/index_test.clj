@@ -5,7 +5,6 @@
 (deftest index
    
   (def test-index (create-index)) 
-  (clear test-index)
   (add test-index {:id "7", :team "Red Sox"})
 
   (testing "should be empty after clear"

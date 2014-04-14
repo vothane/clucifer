@@ -2,12 +2,12 @@
   (:import (org.apache.lucene.document Document Field Field$Index Field$Store)))
 
 (def defaults 
-  {:store true :indexed true :type String :analyzer :standard :analyzed false :norms false})
+  {:store true :indexed true :analyzer :standard :analyzed false :norms false})
 
 (defn create-field
-  [data]
-  (let [field-attributes (with-meta data defaults)]
-    field-attributes))
+  [field-name & opts]
+  (let [field-name (with-meta data (merge defaults))]
+    field))
 
 
 (defn update-meta-data 
@@ -33,5 +33,6 @@
   (let [lucene-field (Field. 
                        (as-str (keys field)) (as-str (vals field)) 
                        (field-store-map (:store (meta field)))                       
-                       (meta-map (into [] (map false? [(:indexed (meta field)) (:analyzed (meta field)) (:norms (meta field))])) Field$Index/ANALYZED))]
+                       (meta-map (into [] (map false? [(:indexed (meta field)) (:analyzed (meta field)) (:norms (meta field))])) 
+                         Field$Index/ANALYZED))]
     lucene-field))

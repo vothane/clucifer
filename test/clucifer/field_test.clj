@@ -12,7 +12,7 @@
 
   (testing "meta attributes should be updated"
     (let [a-field (create-field {:name "clucifer"})]
-      (update-meta-data a-field :store false)
+      (update-meta-data a-field {:store false})
       (is (= (:store (meta a-field) false))))
 
   (testing "should convert to Lucene field"

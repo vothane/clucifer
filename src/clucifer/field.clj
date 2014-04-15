@@ -10,8 +10,8 @@
     field-attributes))
 
 (defn update-meta-data 
-  [field attribute value]
-  (vary-meta field assoc attribute value))
+  [field map]
+  (vary-meta field merge map))
 
 (def field-store-map {false Field$Store/NO
                       true  Field$Store/YES})

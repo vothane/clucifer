@@ -1,5 +1,5 @@
 (ns clucifer.index
-  (:require [clojure.field :refer :all])
+  (:require [clucifer.field :refer :all])
   (:import (org.apache.lucene.document Document Field Field$Index Field$Store)
            (org.apache.lucene.index IndexWriter IndexReader Term
                                     IndexWriterConfig DirectoryReader FieldInfo)
@@ -24,7 +24,7 @@
 
 (defn- add-field [document map & meta-map]
   (let [base  (create-field)
-        field (update-meta-data field attribute value)]
+        field (update-meta-data base map)]
     (.add ^Document document (to-lucene-field field))))
 
 (defn- map->document [map]

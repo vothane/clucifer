@@ -1,6 +1,5 @@
 (ns clucifer.index-test
   (:require [clojure.test :refer :all]
-            [clucifer.core :refer :all]
             [clucifer.index :refer :all]))
 
 (deftest index

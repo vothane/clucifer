@@ -1,13 +1,12 @@
 (ns clucifer.index
-  (:require [clucifer.field :refer :all])
+  (:require [clucifer.field :refer :all]
+            [clucifer.core :refer :all])
   (:import (org.apache.lucene.document Document Field Field$Index Field$Store)
            (org.apache.lucene.index IndexWriter IndexReader Term
                                     IndexWriterConfig DirectoryReader FieldInfo)
            (org.apache.lucene.analysis.standard StandardAnalyzer)
+           (org.apache.lucene.search IndexSearcher TermQuery)
            (org.apache.lucene.util Version AttributeSource)))
-
-(def ^{:dynamic true} *version* Version/LUCENE_CURRENT)
-(def ^{:dynamic true} *analyzer* (StandardAnalyzer. *version*))
 
 (defn create-index []
   (let [index (ref {:index-info {}, :uncommitted {}})]
@@ -42,3 +41,9 @@
 
 (defn uncommitted [index]
   (:uncommitted @index))
+
+(defn search [index field value max-results]
+  (let [searcher (IndexSearcher. index)
+        term     (Term. field value)
+        query    (TermQuery. term)]
+    (.search searcher query max-results)))

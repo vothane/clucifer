@@ -6,7 +6,8 @@
                                     IndexWriterConfig DirectoryReader FieldInfo)
            (org.apache.lucene.analysis.standard StandardAnalyzer)
            (org.apache.lucene.search IndexSearcher TermQuery)
-           (org.apache.lucene.util Version AttributeSource)))
+           (org.apache.lucene.util Version AttributeSource)
+           (org.apache.lucene.store NIOFSDirectory RAMDirectory Directory)))
 
 (defn create-index []
   (let [index (ref {:index-info {}, :uncommitted {}})]
@@ -16,7 +17,7 @@
   (IndexWriter. index (IndexWriterConfig. *version* *analyzer*)))
 
 (defn add [index data]
-  (dosync (alter index merge-with merge {:uncommitted data})))
+  (dosync (alter index merge {:uncommitted data})))
 
 (defn clear [index]
   (dosync (alter index update-in [:uncommitted] {})))
@@ -35,15 +36,19 @@
     (doseq [m maps]
       (.addDocument writer (map->document m)))))
 
-(defn commit [index]
-  (add->lucence index (:uncommitted @index))
+(defn commit [lucence-index index]
+  (add->lucence lucence-index (:uncommitted index))
   (clear index))
 
 (defn uncommitted [index]
   (:uncommitted @index))
 
+(defn- index-reader ^IndexReader [index]
+  (DirectoryReader/open ^Directory index))
+
 (defn search [index field value max-results]
-  (let [searcher (IndexSearcher. index)
+  (let [reader   (index-reader index)
+        searcher (IndexSearcher. reader)
         term     (Term. field value)
         query    (TermQuery. term)]
     (.search searcher query max-results)))

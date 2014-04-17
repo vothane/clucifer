@@ -17,10 +17,10 @@
   (IndexWriter. index (IndexWriterConfig. *version* *analyzer*)))
 
 (defn add [index data]
-  (dosync (alter index merge {:uncommitted data})))
+  (dosync (alter index update-in [:uncommitted] merge data)))
 
 (defn clear [index]
-  (dosync (alter index update-in [:uncommitted] {})))
+  (dosync (alter index assoc :uncommitted {})))
 
 (defn- add-field [document map & meta-map]
   (let [base  (create-field)

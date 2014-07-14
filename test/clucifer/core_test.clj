@@ -3,6 +3,6 @@
             [clucifer.core :refer :all]))
 
 (testing "lucene macro"
-  (let [index (deflucence *instance*)]
-    (is (= index "org.apache.lucene.store.RAMDirectory"))))
+  (let [_ (deflucence *instance*)]
+    (is (= (.toString (class *instance*)) "class org.apache.lucene.store.RAMDirectory"))))
 

@@ -20,6 +20,11 @@
 ;; flag to indicate a default "_content" field should be maintained
 (def ^{:dynamic true} *content* true)
 
+(def ^:dynamic *lucence*)
+(def ^:dynamic *indices*)
+
+(def defaults {})
+
 (defn memory-index
   "Create a new index in RAM."
   []
@@ -29,3 +34,8 @@
   "Create a new index in a directory on disk."
   [^String dir-path]
   (NIOFSDirectory. (File. dir-path)))
+
+(defmacro deflucence [-symbol & [configs]]
+  (let [config (merge defaults configs)]
+    `(def ~(with-meta -symbol {:dynamic true})
+       (memory-index))))

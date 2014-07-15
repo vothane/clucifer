@@ -1,4 +1,5 @@
 (ns clucifer.core
+  (:require [clucifer.index :refer :all])
   (:import (java.io StringReader File)
            (org.apache.lucene.analysis Analyzer TokenStream)
            (org.apache.lucene.analysis.standard StandardAnalyzer)
@@ -38,4 +39,4 @@
 (defmacro deflucence [-symbol & [configs]]
   (let [config (merge defaults configs)]
     `(def ~(with-meta -symbol {:dynamic true})
-       (memory-index))))
+      (memory-index))))

@@ -1,5 +1,6 @@
 (ns clucifer.core
-  (:require [clucifer.index :refer :all])
+  (:require [clucifer.index]
+            [clucifer.search])
   (:import (java.io StringReader File)
            (org.apache.lucene.analysis Analyzer TokenStream)
            (org.apache.lucene.analysis.standard StandardAnalyzer)
@@ -21,7 +22,7 @@
 ;; flag to indicate a default "_content" field should be maintained
 (def ^{:dynamic true} *content* true)
 
-(def ^:dynamic *lucence*)
+(def ^:dynamic *index*)
 (def ^:dynamic *indices*)
 
 (def defaults {})
@@ -35,6 +36,21 @@
   "Create a new index in a directory on disk."
   [^String dir-path]
   (NIOFSDirectory. (File. dir-path)))
+
+(defn- index-writer
+  "Create an IndexWriter."
+  ^IndexWriter
+  [index]
+  (IndexWriter. index (IndexWriterConfig. *version* *analyzer*)))
+
+(defn- index-reader
+  "Create an IndexReader."
+  ^IndexReader
+  [index]
+  (DirectoryReader/open ^Directory index))
+
+(defmacro lucence-> [deflucence-instance & body]
+  `(binding [*index* ~deflucence-instance] ~@body))
 
 (defmacro deflucence [-symbol & [configs]]
   (let [config (merge defaults configs)]

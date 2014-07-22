@@ -1,6 +1,4 @@
 (ns clucifer.core
-  (:require [clucifer.index]
-            [clucifer.search])
   (:import (java.io StringReader File)
            (org.apache.lucene.analysis Analyzer TokenStream)
            (org.apache.lucene.analysis.standard StandardAnalyzer)
@@ -37,17 +35,17 @@
   [^String dir-path]
   (NIOFSDirectory. (File. dir-path)))
 
-(defn- index-writer
-  "Create an IndexWriter."
-  ^IndexWriter
-  [index]
-  (IndexWriter. index (IndexWriterConfig. *version* *analyzer*)))
-
-(defn- index-reader
+(defn index-reader
   "Create an IndexReader."
   ^IndexReader
   [index]
   (DirectoryReader/open ^Directory index))
+
+(defn index-writer
+  "Create an IndexWriter."
+  ^IndexWriter
+  [index]
+  (IndexWriter. index (IndexWriterConfig. *version* *analyzer*)))
 
 (defmacro lucence-> [deflucence-instance & body]
   `(binding [*index* ~deflucence-instance] ~@body))

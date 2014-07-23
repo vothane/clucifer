@@ -29,6 +29,6 @@
   (index-> (Document.) "ide" "test" Field$Store/YES Field$Index/ANALYZED))
 
 (lucence-> *test*
-  (search-> "ide" "ide:test"
+  (search-> "ide" "*:*"
     (is (= 1 (.totalHits hits)))
     (is (= "test" (.scoreDocs hits)))))

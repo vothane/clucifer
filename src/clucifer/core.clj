@@ -47,10 +47,10 @@
   [index]
   (IndexWriter. index (IndexWriterConfig. *version* *analyzer*)))
 
-(defmacro lucence-> [deflucence-instance & body]
-  `(binding [*index* ~deflucence-instance] ~@body))
+(defmacro lucene-> [deflucene-instance & body]
+  `(binding [*index* ~deflucene-instance] ~@body))
 
-(defmacro deflucence [-symbol & [configs]]
+(defmacro deflucene [-symbol & [configs]]
   (let [config (merge defaults configs)]
     `(def ~(with-meta -symbol {:dynamic true})
       (memory-index))))

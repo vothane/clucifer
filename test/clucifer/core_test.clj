@@ -20,15 +20,15 @@
 
 
 (testing "lucene macro"
-  (let [_ (deflucence *instance*)]
+  (let [_ (deflucene *instance*)]
     (is (= (.toString (class *instance*)) "class org.apache.lucene.store.RAMDirectory"))))
 
-(deflucence *test*)
+(deflucene *test*)
 
-(lucence-> *test*
+(lucene-> *test*
   (index-> (Document.) "ide" "test" Field$Store/YES Field$Index/ANALYZED))
 
-(lucence-> *test*
+(lucene-> *test*
   (search-> "ide" "*:*"
     (is (= 1 (.totalHits hits)))
     (is (= "test" (.scoreDocs hits)))))

@@ -26,7 +26,7 @@
 (deflucene *test*)
 
 (lucene-> *test*
-  (index-> (Document.) "ide" "test" Field$Store/YES Field$Index/ANALYZED))
+  (index-> (Document.) "ide" "test"))
 
 (lucene-> *test*
   (search-> "ide" "*:*"

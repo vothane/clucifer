@@ -8,10 +8,27 @@
            (org.apache.lucene.index IndexWriter IndexWriterConfig FieldInfo)))
 
 (defmacro index-> 
-  [document field-key field-value store? indexed? & body]
-  `(let [~'_      (.add ^Document ~document (Field. ~field-key ~field-value ~store? ~indexed?))
+  [document field-key field-value & body]
+  `(let [~'_      (.add ^Document ~document (make-field ~field-key ~field-value))
          ~'writer (index-writer *index*)
          ~'added  (.addDocument ~'writer ~document)
          ~'_      (.close ~'writer)]
      (or ~@body
          ~'added)))
+
+(def configs {:stored true :indexed true :analyzed false :norms false})
+
+(def meta-map-pair {[false false] Field$Index/ANALYZED
+                    [true false] Field$Index/NOT_ANALYZED
+                    [false true] Field$Index/ANALYZED_NO_NORMS
+                    [true true] Field$Index/NOT_ANALYZED_NO_NORMS})
+
+(defn make-field [field-key field-value]
+  (let [meta-map (merge configs (meta field-key))]
+    (Field. field-key field-value
+      (if (false? (:stored meta-map))
+        Field$Store/NO
+        Field$Store/YES)
+      (if (false? (:indexed meta-map))
+        Field$Index/NO
+        (meta-map-pair [(false? (:analyzed meta-map)) (false? (:norms meta-map))])))))

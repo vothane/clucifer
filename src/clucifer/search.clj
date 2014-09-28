@@ -13,10 +13,10 @@
 (defmacro search-> 
   [^String field ^String query & body]
   {:pre (string? query)}
-  `(with-open [~'reader (index-reader *index*)]
-    (let [~'searcher (IndexSearcher. ~'reader)
-          ~'parser   (QueryParser. *version* ~field *analyzer*)
-          ~'term     (.parse ~'parser ~query)
-          ~'hits     (.search ~'searcher ~'term 10)]
+  `(with-open [reader# (index-reader *index*)]
+    (let [searcher# (IndexSearcher. reader#)
+          parser#   (QueryParser. *version* ~field *analyzer*)
+          term#     (.parse parser# ~query)
+          ~'hits     (.search searcher# term# 10)]
       (or ~@body
           ~'hits))))

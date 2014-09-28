@@ -10,10 +10,10 @@
                                      Scorer TermQuery)
            (org.apache.lucene.store NIOFSDirectory RAMDirectory Directory)))
 
-(defmacro delete-> [query field]
-  `(let [parser# (QueryParser. *version* ~field *analyzer*)
-           query#  (.parse parser# ~query)
-           writer# (index-writer *index*)
-           deleted#  (.deleteDocuments writer# query#)
-           _#      (.close writer#)]
-       (println deleted#)))
+(defmacro delete-> [query field & body]
+  `(with-open [writer# (index-writer *index*)]
+    (let [parser#   (QueryParser. *version* ~field *analyzer*)
+          query#    (.parse parser# ~query)
+          ~'deleted (.deleteDocuments writer# query#)]
+      (or ~@body
+          ~'deleted))))

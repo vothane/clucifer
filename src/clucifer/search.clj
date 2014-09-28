@@ -17,6 +17,6 @@
     (let [searcher# (IndexSearcher. reader#)
           parser#   (QueryParser. *version* ~field *analyzer*)
           term#     (.parse parser# ~query)
-          ~'hits     (.search searcher# term# 10)]
+          ~'hits    (.search searcher# term# 10)]
       (or ~@body
           ~'hits))))

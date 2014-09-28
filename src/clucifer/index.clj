@@ -12,8 +12,8 @@
   `(with-open [writer# (index-writer *index*)]
     (let [_#      (.add ^Document ~document (make-field ~field-key ~field-value))
           ~'added (.addDocument writer# ~document)]
-     (or ~@body
-         ~'added))))
+      (or ~@body
+          ~'added))))
 
 (def configs {:stored true :indexed true :analyzed false :norms false})
 

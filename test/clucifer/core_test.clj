@@ -2,7 +2,8 @@
   (:require [clojure.test :refer :all]
             [clucifer.core :refer :all]
             [clucifer.index :refer :all]
-            [clucifer.search :refer :all])
+            [clucifer.search :refer :all]
+            [clucifer.delete :refer :all])
   (:import (java.io StringReader File)
            (org.apache.lucene.analysis Analyzer TokenStream)
            (org.apache.lucene.analysis.standard StandardAnalyzer)
@@ -32,3 +33,8 @@
   (search-> "ide" "*:*"
     (is (= 1 (.totalHits hits)))
     (is (= "test" (.scoreDocs hits)))))
+
+(lucene-> *test*
+  (delete-> {"ide" "test"})
+  (search-> "ide" "*:*"
+    (is (not= "test" (.scoreDocs hits)))))

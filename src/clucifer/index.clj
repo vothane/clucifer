@@ -8,10 +8,9 @@
            (org.apache.lucene.index IndexWriter IndexWriterConfig FieldInfo)))
 
 (defmacro index-> 
-  [document field-key field-value & body]
+  [field-key field-value & body]
   `(with-open [writer# (index-writer *index*)]
-    (let [_#      (.add ^Document ~document (make-field ~field-key ~field-value))
-          ~'added (.addDocument writer# ~document)]
+    (let [~'added (add writer# ~field-key ~field-value)]
       (or ~@body
           ~'added))))
 
@@ -31,3 +30,18 @@
       (if (false? (:indexed meta-map))
         Field$Index/NO
         (meta-map-pair [(false? (:analyzed meta-map)) (false? (:norms meta-map))])))))
+
+(defn add-by-string [writer field-key field-value]
+  (let [document (Document.)]
+    (.add ^Document document (make-field field-key field-value))
+    (.addDocument writer document)))
+
+(defn param-types [param1 param2] 
+  (cond 
+    (and (string? param1) (string? param2)) :strings
+    :else :later))
+
+(defmulti add
+  (fn [writer param1 param2] (param-types param1 param2)))
+(defmethod add :strings [writer param1 param2]
+  (add-by-string writer param1 param2))

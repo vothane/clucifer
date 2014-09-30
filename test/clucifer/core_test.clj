@@ -27,7 +27,7 @@
 (deflucene *test*)
 
 (lucene-> *test*
-  (index-> (Document.) "ide" "test"))
+  (index-> "ide" "test"))
 
 (lucene-> *test*
   (search-> "ide" "*:*"

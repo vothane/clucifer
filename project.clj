@@ -4,7 +4,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]
-                 [org.apache.lucene/lucene-core "4.10.0"]
-                 [org.apache.lucene/lucene-queryparser "4.10.0"]
-                 [org.apache.lucene/lucene-analyzers-common "4.10.0"]
-                 [org.apache.lucene/lucene-highlighter "4.10.0"]])
+                 [org.apache.lucene/lucene-core "4.8.1"]
+                 [org.apache.lucene/lucene-queryparser "4.8.1"]
+                 [org.apache.lucene/lucene-analyzers-common "4.8.1"]
+                 [org.apache.lucene/lucene-highlighter "4.8.1"]])

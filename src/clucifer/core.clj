@@ -16,12 +16,7 @@
 
 (def ^{:dynamic true} *version* Version/LUCENE_CURRENT)
 (def ^{:dynamic true} *analyzer* (StandardAnalyzer. *version*))
-
-;; flag to indicate a default "_content" field should be maintained
-(def ^{:dynamic true} *content* true)
-
 (def ^:dynamic *index*)
-(def ^:dynamic *indices*)
 
 (def defaults {})
 

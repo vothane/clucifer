@@ -19,6 +19,7 @@
 (def ^:dynamic *index*)
 
 (def defaults {})
+(def default-field "_content")
 
 (defn memory-index
   "Create a new index in RAM."

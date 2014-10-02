@@ -7,7 +7,8 @@
   (:import (java.io StringReader File)
            (org.apache.lucene.analysis Analyzer TokenStream)
            (org.apache.lucene.analysis.standard StandardAnalyzer)
-           (org.apache.lucene.document Document Field Field$Index Field$Store)
+           (org.apache.lucene.document Document Field Field$Index Field$Store 
+             DoubleField Field$Store FloatField IntField LongField TextField)
            (org.apache.lucene.index IndexWriter IndexReader Term
                                     IndexWriterConfig DirectoryReader FieldInfo)
            (org.apache.lucene.queryparser.classic QueryParser)
@@ -27,12 +28,13 @@
 (deflucene *test*)
 
 (lucene-> *test*
-  (index-> "ide" "test"))
+  (index-> {:ide "test1"})
+  (index-> [{:ide "test2"} {:ide "test3"}]))
 
 (lucene-> *test*
   (search-> "ide" "*:*"
-    (is (= 1 (.totalHits hits)))
-    (is (= "test" (.scoreDocs hits)))))
+    (is (= 3 (.totalHits hits)))
+    (is (= "test3" (.scoreDocs hits)))))
 
 (lucene-> *test*
   (delete-> {"ide" "test"})

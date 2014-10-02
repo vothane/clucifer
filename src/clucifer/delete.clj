@@ -1,6 +1,6 @@
 (ns clucifer.delete
   (:use [clucifer.core
-         :only [index-writer *index* *version* *analyzer*]])
+         :only [index-writer *index* *version* *analyzer* default-field]])
   (:import (java.io StringReader File)
            (org.apache.lucene.analysis.standard StandardAnalyzer)
            (org.apache.lucene.index IndexWriter IndexReader DirectoryReader Term)
@@ -17,7 +17,7 @@
           ~'deleted))))
 
 (defn delete-by-query [writer query]
-  (let [parser (QueryParser. *version* "_content" *analyzer*)
+  (let [parser (QueryParser. *version* default-field *analyzer*)
         query  (.parse parser query)]
     (.deleteDocuments writer query)))
 

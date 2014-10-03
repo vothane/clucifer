@@ -4,6 +4,7 @@
             [clucifer.index :refer :all]
             [clucifer.search :refer :all]
             [clucifer.delete :refer :all])
+  (:use [clucifer.data :only [top-selling-books top-grossing-films]] :reload)
   (:import (java.io StringReader File)
            (org.apache.lucene.analysis Analyzer TokenStream)
            (org.apache.lucene.analysis.standard StandardAnalyzer)
@@ -20,23 +21,29 @@
            (org.apache.lucene.util Version AttributeSource)
            (org.apache.lucene.store NIOFSDirectory RAMDirectory Directory)))
 
-
 (testing "lucene macro"
   (let [_ (deflucene *instance*)]
     (is (= (.toString (class *instance*)) "class org.apache.lucene.store.RAMDirectory"))))
 
-(deflucene *test*)
+(deflucene *book-index*)
 
-(lucene-> *test*
-  (index-> {:ide "test1"})
-  (index-> [{:ide "test2"} {:ide "test3"}]))
+(lucene-> *book-index*
+  (do
+    (index-> top-selling-books)
+    (search-> "title" "Cities"
+      (do 
+        (is (= 1 (count results)))
+        (is (= "A Tale of Two Cities" (:title (first results)))
+        (is (= "Charles Dickens" (:author (first results)))))))
+    (search-> "author" "Dan Brown"
+      (do
+        (is (= 1 (count results)))
+        (is (= "The Da Vinci Code" (:title (first results)))
+        (is (= 2003 (:published (first results)))))))))
 
-(lucene-> *test*
-  (search-> "ide" "*:*"
-    (is (= 3 (.totalHits hits)))
-    (is (= "test3" (.scoreDocs hits)))))
+(lucene-> *book-index*
+  (delete-> {"title" "The Hobbit"}))
 
-(lucene-> *test*
-  (delete-> {"ide" "test"})
-  (search-> "ide" "*:*"
-    (is (not= "test" (.scoreDocs hits)))))
+(lucene-> *book-index*
+  (search-> "title" "The Hobbit"
+    (is (= 0 (count results)))))

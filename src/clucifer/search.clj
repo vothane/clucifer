@@ -4,7 +4,7 @@
   (:import (java.io StringReader File)
            (org.apache.lucene.analysis.standard StandardAnalyzer)
            (org.apache.lucene.index IndexReader DirectoryReader)
-           (org.apache.lucene.queryparser.classic QueryParser)
+           (org.apache.lucene.queryparser.classic QueryParser MultiFieldQueryParser)
            (org.apache.lucene.search BooleanClause BooleanClause$Occur
                                      BooleanQuery IndexSearcher Query TopDocs ScoreDoc
                                      Scorer TermQuery)
@@ -12,17 +12,46 @@
            (org.apache.lucene.store NIOFSDirectory RAMDirectory Directory)))
 
 (defmacro search-> 
-  [^String field ^String query & body]
-  {:pre (string? query)}
+  [query & body]
   `(with-open [reader# (index-reader *index*)]
     (let [searcher# (IndexSearcher. reader#)
-          parser#   (QueryParser. *version* ~field *analyzer*)
-          term#     (.parse parser# ~query)
-          ~'hits    (.search searcher# term# 10)
+          query#    (make-query ~query)
+          ~'hits    (.search searcher# query# 10)
           ~'results (documents->maps searcher# ~'hits)]
       (or ~@body
           ~'results))))
 
+(declare query-type parse-query)
+
+(defmulti make-query
+  (fn [query] (query-type query)))
+(defmethod make-query :term [query]
+  (parse-query query (fn [v f a] (QueryParser. v f a))))
+(defmethod make-query :multi [query]
+  (parse-query query (fn [v f a] (MultiFieldQueryParser. v f a))))
+          
+(defn query-type [query] 
+  (cond (= (count query) 1) :term
+        (> (count query) 1) :multi
+        :else :WAT?))   
+
+(defn get-fields [query]
+  (if (> (count query) 1)    
+    (into-array (map #(name %) (keys query)))
+    (name (key (first query)))))
+
+(defn map->query [m] 
+  (if (> (count m) 1)        
+    (clojure.string/join 
+      " AND "
+      (map #(str (name (first %)) ":" "'" (second %) "'") m))
+    (str (name (key (first m))) ":" (val (first m)))))
+
+(defn parse-query [query query-parser]
+  (let [fields (get-fields query)
+        parser (query-parser *version* fields *analyzer*)]
+    (.parse parser (map->query query))))
+                
 (defn- field->key [field]
   (keyword (.name field)))
 

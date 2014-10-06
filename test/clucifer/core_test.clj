@@ -30,12 +30,12 @@
 (lucene-> *book-index*
   (do
     (index-> top-selling-books)
-    (search-> "title" "Cities"
+    (search-> {:title "Cities"}
       (do 
         (is (= 1 (count results)))
         (is (= "A Tale of Two Cities" (:title (first results)))
         (is (= "Charles Dickens" (:author (first results)))))))
-    (search-> "author" "Dan Brown"
+    (search-> {:author "Dan Brown"}
       (do
         (is (= 1 (count results)))
         (is (= "The Da Vinci Code" (:title (first results)))
@@ -45,5 +45,5 @@
   (delete-> {"title" "The Hobbit"}))
 
 (lucene-> *book-index*
-  (search-> "title" "The Hobbit"
+  (search-> {:title "The Hobbit"}
     (is (= 0 (count results)))))

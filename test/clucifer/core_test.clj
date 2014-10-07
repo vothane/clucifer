@@ -47,3 +47,17 @@
 (lucene-> *book-index*
   (search-> {:title "The Hobbit"}
     (is (= 0 (count results)))))
+
+
+(deflucene *film-index*)
+
+(lucene-> *film-index*
+  (do
+    (index-> top-grossing-films)
+    (search-> {:title "Pirates" :director "Gore"}
+      (do 
+        (is (= 2 (count results)))
+        (is (= results
+               [{:title "Pirates of the Caribbean: At World's End" :year 2007 :director "Gore Verbinski" :gross 963420425 :rank 23} 
+                {:title "Pirates of the Caribbean: Dead Man's Chest" :year 2006 :director "Gore Verbinski" :gross 1066179725 :rank 12}]))))))
+    
